@@ -37,6 +37,50 @@ export async function POST(req: Request) {
       "svix-timestamp": svix_timestamp,
       "svix-signature": svix_signature,
     }) as WebhookEvent;
+
+    if (evt.type === "user.created") {
+      await prismadb.user.create({
+        data: {
+          username: payload.data.username,
+          email: payload.data.email_addresses[0].email_address,
+          profilePic: payload.data.image_url,
+          clerkUserId: payload.data.id,
+        },
+      });
+
+      return new Response("Create", { status: 200 });
+    }
+
+    if (evt.type === "user.updated") {
+      await prismadb.user.update({
+        where: {
+          clerkUserId: payload.data.id,
+        },
+        data: {
+          username: payload.data.username,
+          email: payload.data.email_addresses[0].email_address,
+          profilePic: payload.data.image_url,
+        },
+      });
+      return new Response("Update", { status: 200 });
+    }
+
+    if (evt.type === "user.deleted") {
+      const exitingUser = await prismadb.user.findUnique({
+        where: {
+          clerkUserId: payload.data.id,
+        },
+      });
+
+      if (exitingUser) {
+        await prismadb.user.delete({
+          where: {
+            clerkUserId: payload.data.id,
+          },
+        });
+      }
+      return new Response("Sildim", { status: 200 });
+    }
   } catch (err) {
     console.error("Error verifying webhook:", err);
     return new Response("Error occured", {
@@ -47,53 +91,49 @@ export async function POST(req: Request) {
   const { id } = evt.data;
   const eventType = evt.type;
 
-  if (evt.type === "user.created") {
-    console.log("userId:", evt.data.id);
-  }
-
   ///////   Created
-  if (eventType === "user.created") {
-    await prismadb.user.create({
-      data: {
-        username: payload.data.username,
-        email: payload.data.email_addresses[0].email_address,
-        profilePic: payload.data.image_url,
-        clerkUserId: payload.data.id,
-      },
-    });
+  // if (eventType === "user.created") {
+  //   await prismadb.user.create({
+  //     data: {
+  //       username: payload.data.username,
+  //       email: payload.data.email_addresses[0].email_address,
+  //       profilePic: payload.data.image_url,
+  //       clerkUserId: payload.data.id,
+  //     },
+  //   });
 
-    return new Response("Create", { status: 200 });
-  }
+  //   return new Response("Create", { status: 200 });
+  // }
 
-  if (eventType === "user.updated") {
-    await prismadb.user.update({
-      where: {
-        clerkUserId: payload.data.id,
-      },
-      data: {
-        username: payload.data.username,
-        email: payload.data.email_addresses[0].email_address,
-        profilePic: payload.data.image_url,
-      },
-    });
-    return new Response("Update", { status: 200 });
-  }
+  // if (eventType === "user.updated") {
+  //   await prismadb.user.update({
+  //     where: {
+  //       clerkUserId: payload.data.id,
+  //     },
+  //     data: {
+  //       username: payload.data.username,
+  //       email: payload.data.email_addresses[0].email_address,
+  //       profilePic: payload.data.image_url,
+  //     },
+  //   });
+  //   return new Response("Update", { status: 200 });
+  // }
 
-  if (eventType === "user.deleted") {
-    const exitingUser = await prismadb.user.findUnique({
-      where: {
-        clerkUserId: payload.data.id,
-      },
-    });
+  // if (eventType === "user.deleted") {
+  //   const exitingUser = await prismadb.user.findUnique({
+  //     where: {
+  //       clerkUserId: payload.data.id,
+  //     },
+  //   });
 
-    if (exitingUser) {
-      await prismadb.user.delete({
-        where: {
-          clerkUserId: payload.data.id,
-        },
-      });
-    }
-    return new Response("Sildim", { status: 200 });
-  }
+  //   if (exitingUser) {
+  //     await prismadb.user.delete({
+  //       where: {
+  //         clerkUserId: payload.data.id,
+  //       },
+  //     });
+  //   }
+  //   return new Response("Sildim", { status: 200 });
+  // }
   return new Response("Genel", { status: 200 });
 }
