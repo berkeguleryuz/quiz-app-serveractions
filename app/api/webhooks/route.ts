@@ -1,4 +1,3 @@
-
 import { prismadb } from "@/lib/db";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
@@ -88,6 +87,5 @@ export async function POST(req: Request) {
       });
     }
   }
-  
   return new Response("", { status: 200 });
 }
