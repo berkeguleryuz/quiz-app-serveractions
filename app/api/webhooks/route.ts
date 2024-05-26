@@ -57,6 +57,8 @@ export async function POST(req: Request) {
         clerkUserId: payload.data.id,
       },
     });
+
+    return new Response("Create", { status: 200 });
   }
 
   if (eventType === "user.updated") {
@@ -70,6 +72,7 @@ export async function POST(req: Request) {
         profilePic: payload.data.image_url,
       },
     });
+    return new Response("Update", { status: 200 });
   }
 
   if (eventType === "user.deleted") {
@@ -86,6 +89,7 @@ export async function POST(req: Request) {
         },
       });
     }
+    return new Response("Sildim", { status: 200 });
   }
-  return new Response("", { status: 200 });
+  return new Response("Genel", { status: 200 });
 }
