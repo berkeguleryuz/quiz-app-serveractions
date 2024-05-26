@@ -1,4 +1,5 @@
-import prisma from "@/lib/db";
+
+import { prismadb } from "@/lib/db";
 import { WebhookEvent } from "@clerk/nextjs/server";
 import { headers } from "next/headers";
 import { Svix } from "svix";
@@ -49,7 +50,7 @@ export async function POST(req: Request) {
 
   ///////   Created
   if (eventType === "user.created") {
-    await prisma.user.create({
+    await prismadb.user.create({
       data: {
         username: payload.data.username,
         email: payload.data.email_addresses[0].email_address,
@@ -60,7 +61,7 @@ export async function POST(req: Request) {
   }
 
   if (eventType === "user.updated") {
-    await prisma.user.update({
+    await prismadb.user.update({
       where: {
         clerkUserId: payload.data.id,
       },
@@ -73,14 +74,14 @@ export async function POST(req: Request) {
   }
 
   if (eventType === "user.deleted") {
-    const exitingUser = await prisma.user.findUnique({
+    const exitingUser = await prismadb.user.findUnique({
       where: {
         clerkUserId: payload.data.id,
       },
     });
 
     if (exitingUser) {
-      await prisma.user.delete({
+      await prismadb.user.delete({
         where: {
           clerkUserId: payload.data.id,
         },
