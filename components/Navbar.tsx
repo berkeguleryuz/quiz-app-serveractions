@@ -24,7 +24,7 @@ function Navbar() {
           <Link href={"/"}>About</Link>
         </Button>
         <Button asChild variant={"link"}>
-          <Link href={"/"}>About</Link>
+          <Link href={"/"}>Dashboard</Link>
         </Button>
       </div>
       <div className="">
