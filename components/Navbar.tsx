@@ -27,7 +27,7 @@ function Navbar() {
           <Link href={"/"}>Dashboard</Link>
         </Button>
       </div>
-      <div className="">
+      <div className="items-center">
         <SignedOut>
           <SignInButton />
         </SignedOut>
