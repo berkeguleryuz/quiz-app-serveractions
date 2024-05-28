@@ -58,7 +58,7 @@ export async function POST(req: Request) {
       },
     });
 
-    return new Response("Create", { status: 201 });
+    return new Response("Create", { status: 200 });
   }
 
   if (evt.type === "user.updated") {
@@ -72,7 +72,7 @@ export async function POST(req: Request) {
         profilePic: payload.data.image_url,
       },
     });
-    return new Response("Update", { status: 201 });
+    return new Response("Update", { status: 200 });
   }
 
   if (evt.type === "user.deleted") {
@@ -89,7 +89,7 @@ export async function POST(req: Request) {
         },
       });
     }
-    return new Response("Sildim", { status: 201 });
+    return new Response("Sildim", { status: 200 });
   }
-  return new Response("Genel", { status: 201 });
+  return new Response("Genel", { status: 200 });
 }
